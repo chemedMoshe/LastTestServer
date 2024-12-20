@@ -3,10 +3,10 @@ import GeografModel from "../DBModel/geografModel";
 import CasesType from "../Types/CasesType";
 
 
-export const getCasesByHighNkill = async (attacktype1_txt: string | null = null) => {
+export const getCasesByHighNkill = async (attacktype1_txt: string[] | null = null) => {
     try {
         const mongoData: any[] = attacktype1_txt ?
-            await CasesModel.find({ attacktype1_txt })
+            await CasesModel.find({ $in: attacktype1_txt })
             :
             await CasesModel.find({});
         return mongoData.sort((x, y) => y.nkill - x.nkill).slice(mongoData.length - 100, mongoData.length-1);
