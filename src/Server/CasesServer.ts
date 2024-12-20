@@ -6,11 +6,26 @@ import CasesType from "../Types/CasesType";
 export const getCasesByHighNkill = async (attacktype1_txt: string[] | null = null) => {
     try {
         const mongoData: any[] = attacktype1_txt ?
-            await CasesModel.find({ $in: attacktype1_txt })
+            await CasesModel.find({
+                attacktype1_txt: { 
+                  $in: attacktype1_txt,  // סינון לפי הערכים במערך
+                  $nin: [0, null]    // סינון את הערכים 0 ו-null בשדה attacktype1_txt
+                },
+                nwound: { $nin: [0, null] },  // סינון את הערכים 0 ו-null בשדה field1
+                nkill: { $nin: [0, null] }   // סינון את הערכים 0 ו-null בשדה field2
+              })
             :
-            await CasesModel.find({});
-        return mongoData.sort((x, y) => y.nkill - x.nkill).slice(mongoData.length - 100, mongoData.length-1);
-    }
+            await CasesModel.find({$and: [
+                //@ts-ignore
+                { nwound: { $ne: 0, $ne: null } },
+                //@ts-ignore
+                { nkill: { $ne: 0, $ne: null } }
+              ]
+            });
+        console.log(
+         mongoData.sort((x, y) => y.nkill - x.nkill).slice(mongoData.length - 10, mongoData.length-1)
+        )
+        }
     catch (error) {
         throw new Error((error as Error).message);
     }

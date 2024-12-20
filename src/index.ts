@@ -3,7 +3,7 @@ import 'dotenv/config';
 import { ConnectDB } from './config/connectDB';
 import {getCasesByStrongGnameAnd, getGnameByYear } from './Server/GNameServuice';
 import { sidCantry } from './Server/sid';
-import { getSumCasualties } from './Server/CasesServer';
+import { getCasesByHighNkill, getSumCasualties } from './Server/CasesServer';
 
 const app = exp();
 
@@ -18,7 +18,8 @@ ConnectDB();
 //getSumCasualties()
 //getBoldGname("Brazil",5)
 //getGnameByYear(1971,"Unknown")
-getCasesByStrongGnameAnd("Unknown")
+//getCasesByStrongGnameAnd("Unknown")
+getCasesByHighNkill(["Assassination","Armed Assault"])
 const PORT = process.env.PORT || 3000
 app.use(exp.json());
 
