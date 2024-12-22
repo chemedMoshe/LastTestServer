@@ -4,6 +4,7 @@ import YearsModel from '../DBModel/YearsMosel';
 import { log } from 'console';
 import OrganisationModel from '../DBModel/OrganisationModel';
 import geografModel from '../DBModel/geografModel';
+import TypesCasesModel from '../DBModel/TypesCasesModel';
 
 const data: any[] = JSON.parse(fs.readFileSync("./public/data/data.json", 'utf8'));
 const years = {};
@@ -87,6 +88,21 @@ export const sidCantry = async () => {
 
     }
 };
+export const sidTypeCases = async()=>{
+    const data = await CasesModel.find({})
+    const types = {}
+    data.filter(x => x.attacktype1_txt != "Unknown")
+    .forEach(x => {
+        types[x.attacktype1_txt]= 0
+    })
+    for(let c of Object.keys(types)){
+const ids = data.filter(x => x. attacktype1_txt === c)
+.map(x => x._id)
+types[c] = ids
+await TypesCasesModel.create({Name:c,Cases:ids})
+    }
+    log(types)
+}
 export const check = async () => {
     const isExist = await CasesModel.find({});
     console.log(isExist.filter(x => x.attacktype1_txt).length);

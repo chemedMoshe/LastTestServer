@@ -1,30 +1,24 @@
 import CasesModel from "../DBModel/CasesModel";
 import GeografModel from "../DBModel/geografModel";
+import TypesCasesModel from "../DBModel/TypesCasesModel";
 import CasesType from "../Types/CasesType";
 
 
-export const getCasesByHighNkill = async (attacktype1_txt: string[] | null = null) => {
+export const getCasesByHighNkill = async (attacktype1_txt: string[] | null[] = [null]) => {
     try {
-        const mongoData: any[] = attacktype1_txt ?
-            await CasesModel.find({
-                attacktype1_txt: { 
-                  $in: attacktype1_txt,  // סינון לפי הערכים במערך
-                  $nin: [0, null]    // סינון את הערכים 0 ו-null בשדה attacktype1_txt
+        if(!attacktype1_txt[0]) return [];
+        const mongoData: any[] = 
+            await TypesCasesModel.find({
+                Name: { 
+                  $in: attacktype1_txt, 
+                  $nin: [0, null] 
                 },
-                nwound: { $nin: [0, null] },  // סינון את הערכים 0 ו-null בשדה field1
-                nkill: { $nin: [0, null] }   // סינון את הערכים 0 ו-null בשדה field2
+               
               })
-            :
-            await CasesModel.find({$and: [
-                //@ts-ignore
-                { nwound: { $ne: 0, $ne: null } },
-                //@ts-ignore
-                { nkill: { $ne: 0, $ne: null } }
-              ]
-            });
-        console.log(
-         mongoData.sort((x, y) => y.nkill - x.nkill).slice(mongoData.length - 10, mongoData.length-1)
-        )
+            
+           
+       const res = mongoData.map(x => ({name:x.Name,sum:x.Cases.length}))
+       return res.sort((a,b) => b.sum - a.sum)
         }
     catch (error) {
         throw new Error((error as Error).message);
